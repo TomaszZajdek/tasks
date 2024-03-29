@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DbServiceTests {
@@ -29,7 +28,7 @@ public class DbServiceTests {
     void testFindAll(){
         //Given
         Task task = new Task(1L, "title1", "content1");
-        Mockito.when(repository.findAll()).thenReturn(List.of(task));
+        when(repository.findAll()).thenReturn(List.of(task));
         //When
         List<Task> allTasks = dbService.getAllTasks();
         //Then
@@ -41,7 +40,7 @@ public class DbServiceTests {
         //Given
         long id = 1L;
         Task task = new Task(id, "title1", "content1");
-        Mockito.when(repository.findById(id)).thenReturn(Optional.of(task));
+        when(repository.findById(id)).thenReturn(Optional.of(task));
         //When
         Task actualTask = dbService.getTask(id);
         //Then
@@ -51,7 +50,7 @@ public class DbServiceTests {
     @Test
     void shouldThrowExceptionWhenTaskNotFound(){
         //Given
-        Mockito.when(repository.findById(1L)).thenReturn(Optional.empty());
+        when(repository.findById(1L)).thenReturn(Optional.empty());
         //When&Then
         assertThrows(TaskNotFoundException.class, () -> dbService.getTask(1L));
     }
@@ -60,11 +59,33 @@ public class DbServiceTests {
     void shouldSaveTask(){
         //Given
         Task task = new Task(1L, "title1", "content1");
-        Mockito.when(repository.save(task)).thenReturn(task);
+        when(repository.save(task)).thenReturn(task);
         //When
         Task savedTask = dbService.saveTask(task);
         //Then
         assertEquals(savedTask, task);
     }
+    @Test
+    void shouldThrowExceptionWhenDeletingNonExistingTask() {
+        // Given
+        long taskId = 2L;
+        when(repository.existsById(taskId)).thenReturn(false);
 
+        // When & Then
+        assertThrows(TaskNotFoundException.class, () -> dbService.deleteTask(taskId));
+
+        verify(repository, never()).deleteById(anyLong());
+    }
+    @Test
+    void shouldDeleteExistingTask() throws TaskNotFoundException {
+        // Given
+        long taskId = 1L;
+        when(repository.existsById(taskId)).thenReturn(true);
+
+        // When
+        dbService.deleteTask(taskId);
+
+        // Then
+        verify(repository).deleteById(taskId);
+    }
 }
