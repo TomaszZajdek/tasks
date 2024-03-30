@@ -1,8 +1,7 @@
-package com.crud.tasks.validator;
+package com.crud.tasks.trello.Validator;
 
 import com.crud.tasks.domain.TrelloBoard;
 import com.crud.tasks.trello.validator.TrelloValidator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
-public class ValidatorTestSuite {
+public class ValidatorTest {
 
     @Autowired
     TrelloValidator validator;
