@@ -28,5 +28,7 @@ public class EmailScheduler {
                         .subject(SUBJECT)
                         .message("Currently in database you got: " + size + " " + taskNoun)
                         .build());
+
+
     }
 }
